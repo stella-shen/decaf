@@ -8,6 +8,7 @@ import java.util.List;
 
 import decaf.tree.Tree;
 import decaf.error.DecafError;
+import decaf.frontend.BaseLexer;
 import decaf.frontend.Lexer;
 import decaf.frontend.Parser;
 import decaf.utils.IndentPrintWriter;
@@ -55,6 +56,8 @@ public final class Driver {
 		lexer.setParser(parser);
 		parser.setLexer(lexer);
 		errors = new ArrayList<DecafError>();
+		
+		//parser.diagnose();
 	}
 
 	private void compile() {

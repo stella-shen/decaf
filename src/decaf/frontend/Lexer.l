@@ -55,6 +55,8 @@ WHITESPACE			= ([ \t]+)
 "void"				{ return keyword(Parser.VOID);			}
 "int"				{ return keyword(Parser.INT);			}
 "bool"				{ return keyword(Parser.BOOL);			}
+"class"				{ return keyword(Parser.CLASS);			}
+"string"			{ return keyword(Parser.STRING);		}
 
 
 	// 识别操作符的规则
@@ -83,6 +85,9 @@ WHITESPACE			= ([ \t]+)
 
 	// 识别标识符的规则
 {IDENTIFIER}		{ return identifier(yytext());			}
+
+	//识别单操作符
+{SIMPLE_OPERATOR}	{ return yytext().charAt(0);			}	
 	
 	// 上面规则不能识别的字符怎么处理
 .					{ issueError(new UnrecogCharError(getLocation(), yycharat(0))); 		}
