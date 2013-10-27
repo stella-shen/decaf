@@ -78,6 +78,31 @@ Type            :	INT
 					{
 						$$.type = new Tree.TypeIdent(Tree.INT, $1.loc);
 					}
+					|
+					BOOL
+					{
+						$$.type = new Tree.TypeIdent(Tree.BOOL, $1.loc);
+					}
+					|
+					VOID
+					{
+						$$.type = new Tree.TypeIdent(Tree.VOID, $1.loc);
+					}
+					|
+					STRING
+					{
+						$$.type = new Tree.TypeIdent(Tree.STRING, $1.loc);
+					}
+					|
+					CLASS IDENTIFIER
+					{
+						$$.type = new Tree.TypeClass($2.ident, $1.loc);
+					}
+					|
+					Type '['']'
+					{
+						$$.type = new Tree.TypeArray($1.type, $1.loc);
+					}
               	;
 
 ClassDef        :	CLASS IDENTIFIER ExtendsClause '{' FieldList '}'
@@ -230,7 +255,90 @@ Expr            :	LValue
                 	{
                 		$$.expr = new Tree.Binary(Tree.PLUS, $1.expr, $3.expr, $2.loc);
                 	}
-               
+                |	THIS
+                	{
+                		$$.expr = new Tree.ThisExpr($1.loc);
+                	}
+                |	'(' Expr ')'
+                	{
+                		$$.expr = $2.expr;
+                	}
+               |	Expr '-' Expr
+                	{
+                		$$.expr = new Tree.Binary(Tree.MINUS, $1.expr, $3.expr, $2.loc);
+                	}
+               |	Expr '*' Expr
+                	{
+                		$$.expr = new Tree.Binary(Tree.MUL, $1.expr, $3.expr, $2.loc);
+                	}
+               |	Expr '/' Expr
+                	{
+                		$$.expr = new Tree.Binary(Tree.DIV, $1.expr, $3.expr, $2.loc);
+                	}
+               |	Expr '%' Expr
+                	{
+                		$$.expr = new Tree.Binary(Tree.MOD, $1.expr, $3.expr, $2.loc);
+                	}
+               |	'-' Expr
+               		{
+               			$$.expr = new Tree.Unary(Tree.NEG, $2.expr, $1.loc);
+               		}
+               |	Expr '<' Expr
+               		{
+               			$$.expr = new Tree.Binary(Tree.LT, $1.expr, $3.expr, $2.loc);
+               		}
+               |	Expr LESS_EQUAL Expr
+               		{
+               			$$.expr = new Tree.Binary(Tree.LE, $1.expr, $3.expr, $2.loc);
+               		}
+               |	Expr '>' Expr
+               		{
+               			$$.expr = new Tree.Binary(Tree.GT, $1.expr, $3.expr, $2.loc);
+               		}
+               |	Expr GREATER_EQUAL Expr
+               		{
+               			$$.expr = new Tree.Binary(Tree.GE, $1.expr, $3.expr, $2.loc);
+               		}
+               |	Expr EQUAL Expr
+               		{
+               			$$.expr = new Tree.Binary(Tree.EQ, $1.expr, $3.expr, $2.loc);
+               		}
+               	|	Expr NOT_EQUAL Expr
+               		{
+               			$$.expr = new Tree.Binary(Tree.NE, $1.expr, $3.expr, $2.loc);
+               		}
+               	|	Expr AND Expr
+               		{
+               			$$.expr = new Tree.Binary(Tree.AND, $1.expr, $3.expr, $2.loc);
+               		}
+               	|	Expr OR Expr
+               		{
+               			$$.expr = new Tree.Binary(Tree.OR, $1.expr, $3.expr, $2.loc);
+               		}
+               	|	'!' Expr
+               		{
+               			$$.expr = new Tree.Unary(Tree.NOT, $2.expr, $1.loc);
+               		}
+               	|	READ_INTEGER '(' ')'
+               		{
+               			$$.expr = new Tree.ReadIntExpr($1.loc);
+               		}
+               	|	ReadLine '(' ')'
+               		{
+               			$$.expr = new Tree.ReadLineExpr($1.loc);
+               		}
+               	|	NEW IDENTIFIER '(' ')'
+               		{
+               			$$.expr = new Tree.NewClass($2.ident, $1.loc);
+               		}
+               	|	NEW Type '[' Expr ']'
+               		{
+               			$$.expr = new Tree.NewArray($2.type, $4.expr, $1.loc);
+               		}
+               	|	'(' CLASS IDENTIFIER ')' Expr
+               		{
+               			$$.expr = new Tree.NewClass($3.ident, $1.loc);
+               		}
                 ;
 	
 Constant        :	LITERAL
@@ -259,6 +367,10 @@ ExprList        :	ExprList ',' Expr
                 	{
                 		$$.elist = new ArrayList<Tree.Expr>();
 						$$.elist.add($1.expr);
+                	}
+                |	NEW IDENTIFIER '(' ')'
+                	{
+                		
                 	}
                 ;
     

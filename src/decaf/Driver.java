@@ -50,13 +50,14 @@ public final class Driver {
 		}
 	}
 
-	private void init() {
+	private void init() throws IOException {
 		lexer = new Lexer(option.getInput());
 		parser = new Parser();
 		lexer.setParser(parser);
 		parser.setLexer(lexer);
 		errors = new ArrayList<DecafError>();
 		
+		//lexer.diagnose();
 		//parser.diagnose();
 	}
 

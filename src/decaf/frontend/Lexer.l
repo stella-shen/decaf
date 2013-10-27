@@ -57,6 +57,21 @@ WHITESPACE			= ([ \t]+)
 "bool"				{ return keyword(Parser.BOOL);			}
 "class"				{ return keyword(Parser.CLASS);			}
 "string"			{ return keyword(Parser.STRING);		}
+"break"				{ return keyword(Parser.BREAK);			}
+"else"				{ return keyword(Parser.ELSE);			}
+"extends"			{ return keyword(Parser.EXTENDS);		}
+"for"				{ return keyword(Parser.FOR);			}
+"if"				{ return keyword(Parser.IF);			}
+"new"				{ return keyword(Parser.NEW);			}
+"null"				{ return keyword(Parser.NULL);			}
+"return"			{ return keyword(Parser.RETURN);		}
+"this"				{ return keyword(Parser.THIS);			}
+"while"				{ return keyword(Parser.WHILE);			}
+"static"			{ return keyword(Parser.STATIC);		}
+"Print"				{ return keyword(Parser.PRINT);			}
+"ReadInteger"		{ return keyword(Parser.READ_INTEGER);	}
+"ReadLine"			{ return keyword(Parser.READ_LINE);		}
+//"instanceof"		{ return keyword(Parser.INSTANCEOF);	}
 
 
 	// 识别操作符的规则
@@ -87,7 +102,7 @@ WHITESPACE			= ([ \t]+)
 {IDENTIFIER}		{ return identifier(yytext());			}
 
 	//识别单操作符
-{SIMPLE_OPERATOR}	{ return yytext().charAt(0);			}	
+{SIMPLE_OPERATOR}	{ return yytext().charAt(0);			}
 	
 	// 上面规则不能识别的字符怎么处理
 .					{ issueError(new UnrecogCharError(getLocation(), yycharat(0))); 		}
