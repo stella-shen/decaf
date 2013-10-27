@@ -1,1 +1,9 @@
-*** Error at (2,12): syntax error
+program
+    class Main <empty>
+        static func main voidtype
+            formals
+            stmtblock
+                vardef s stringtype
+                assign
+                    varref s
+                    stringconst "\\\"\n"

@@ -337,7 +337,7 @@ Expr            :	LValue
                		}
                	|	'(' CLASS IDENTIFIER ')' Expr
                		{
-               			$$.expr = new Tree.NewClass($3.ident, $1.loc);
+               			$$.expr = new Tree.TypeCast($3.ident, $5.expr, $1.loc);
                		}
                 ;
 	

@@ -71,13 +71,15 @@ WHITESPACE			= ([ \t]+)
 "Print"				{ return keyword(Parser.PRINT);			}
 "ReadInteger"		{ return keyword(Parser.READ_INTEGER);	}
 "ReadLine"			{ return keyword(Parser.READ_LINE);		}
-//"instanceof"		{ return keyword(Parser.INSTANCEOF);	}
 
 
 	// 识别操作符的规则
 "<="				{ return operator(Parser.LESS_EQUAL);	}
 ">="				{ return operator(Parser.GREATER_EQUAL);}
 "=="				{ return operator(Parser.EQUAL);		}
+"&&"				{ return operator(Parser.AND);			}
+"||"				{ return operator(Parser.OR);			}
+"!="				{ return operator(Parser.NOT_EQUAL);			}
 
 
 	// 识别常数的规则

@@ -1111,7 +1111,7 @@ break;
 case 68:
 //#line 339 "Parser.y"
 {
-               			yyval.expr = new Tree.NewClass(val_peek(2).ident, val_peek(4).loc);
+               			yyval.expr = new Tree.TypeCast(val_peek(2).ident, val_peek(0).expr, val_peek(4).loc);
                		}
 break;
 case 69:
