@@ -1,0 +1,21 @@
+//this is a testcase that test the double variable
+class Main {
+    static void main() {
+        double a;
+        a = 128.1;
+        a = 3.144e+12;
+        a = 5.;
+        a = 0.33e-2;
+    }
+/*
+*this is a multiple line 
+*comment 
+*and it can inlcude /* in it
+*
+*
+*/
+
+
+}
+
+

@@ -36,9 +36,11 @@ HEX_DIGIT 			= ([0-9A-Fa-f])
 HEX_INTEGER			= (0[Xx]{HEX_DIGIT}+)
 DEC_INTEGER			= ({DIGIT}+)
 INTEGER				= ({HEX_INTEGER}|{DEC_INTEGER})
+DOUBLE				= ([\+-]?[0-9]+\.[0-9]*([Ee][\+-]?[0-9]+)?)
 IDENTIFIER			= ([A-Za-z][_0-9A-Za-z]*)
 SIMPLE_OPERATOR		= ("+"|"-"|"*"|"/"|"%"|"="|"<"|">"|"."|","|";"|"!"|"("|")"|"["|"]"|"{"|"}")
 S_COMMENT			= ("//"[^\r\n]*{NEWLINE})
+M_COMMENT			= ("/*"(.*|{NEWLINE}*)*"*/")
 WHITESPACE			= ([ \t]+)
 
 	// 开始条件S表示字符串，根据需要添加
@@ -49,6 +51,7 @@ WHITESPACE			= ([ \t]+)
 {WHITESPACE}		{ /* Just ignore */    }
 {NEWLINE}			{ /* Just ignore */    }
 {S_COMMENT}			{ /* Just ignore */    }
+{M_COMMENT}			{ /* Just ignore */	   }
 
 
 	// 识别关键字的规则 ， 以下部分请根据decaf语言规范以及实验新特性添加
@@ -56,6 +59,7 @@ WHITESPACE			= ([ \t]+)
 "int"				{ return keyword(Parser.INT);			}
 "bool"				{ return keyword(Parser.BOOL);			}
 "class"				{ return keyword(Parser.CLASS);			}
+"double"			{ return keyword(Parser.DOUBLE);		}
 "string"			{ return keyword(Parser.STRING);		}
 "break"				{ return keyword(Parser.BREAK);			}
 "else"				{ return keyword(Parser.ELSE);			}
@@ -71,6 +75,8 @@ WHITESPACE			= ([ \t]+)
 "Print"				{ return keyword(Parser.PRINT);			}
 "ReadInteger"		{ return keyword(Parser.READ_INTEGER);	}
 "ReadLine"			{ return keyword(Parser.READ_LINE);		}
+"repeat"			{ return keyword(Parser.REPEAT);		}
+"until"				{ return keyword(Parser.UNTIL);			}
 
 
 	// 识别操作符的规则
@@ -85,7 +91,8 @@ WHITESPACE			= ([ \t]+)
 	// 识别常数的规则
 "true"				{ return boolConst(true);										}
 "false"				{ return boolConst(false);										}
-{INTEGER}			{ return intConst(yytext());			}
+{INTEGER}			{ return intConst(yytext());									}
+{DOUBLE}			{ return doubleConst(yytext());									}
 <YYINITIAL>\"		{ sloc = getLocation();		  
 					  yybegin(S);
 					  buffer = new StringBuilder();								    }

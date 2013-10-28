@@ -1,0 +1,18 @@
+program
+    class Main <empty>
+        static func main voidtype
+            formals
+            stmtblock
+                vardef a doubletype
+                assign
+                    varref a
+                    doubleconst 128.1
+                assign
+                    varref a
+                    doubleconst 3.144E12
+                assign
+                    varref a
+                    doubleconst 5.0
+                assign
+                    varref a
+                    doubleconst 0.0033

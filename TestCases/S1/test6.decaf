@@ -1,0 +1,7 @@
+class Main {
+    static void main() {
+        repeat{
+            i = i + 1;
+        } until(i < j);
+    }
+}

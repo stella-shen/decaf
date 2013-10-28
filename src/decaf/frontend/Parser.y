@@ -24,7 +24,7 @@ import java.util.*;
 %Jnodebug
 %Jnoconstruct
 
-%token VOID   BOOL  INT   STRING  CLASS 
+%token VOID   BOOL  INT   STRING  CLASS DOUBLE 
 %token NULL   EXTENDS     THIS     WHILE   FOR   
 %token IF     ELSE        RETURN   BREAK   NEW
 %token PRINT  READ_INTEGER         READ_LINE
@@ -33,6 +33,7 @@ import java.util.*;
 %token LESS_EQUAL   GREATER_EQUAL  EQUAL   NOT_EQUAL
 %token '+'  '-'  '*'  '/'  '%'  '='  '>'  '<'  '.'
 %token ','  ';'  '!'  '('  ')'  '['  ']'  '{'  '}'
+%token REPEAT UNTIL
 
 %left OR
 %left AND 
@@ -78,31 +79,30 @@ Type            :	INT
 					{
 						$$.type = new Tree.TypeIdent(Tree.INT, $1.loc);
 					}
-					|
-					BOOL
-					{
-						$$.type = new Tree.TypeIdent(Tree.BOOL, $1.loc);
-					}
-					|
-					VOID
-					{
-						$$.type = new Tree.TypeIdent(Tree.VOID, $1.loc);
-					}
-					|
-					STRING
-					{
-						$$.type = new Tree.TypeIdent(Tree.STRING, $1.loc);
-					}
-					|
-					CLASS IDENTIFIER
-					{
-						$$.type = new Tree.TypeClass($2.ident, $1.loc);
-					}
-					|
-					Type '['']'
-					{
-						$$.type = new Tree.TypeArray($1.type, $1.loc);
-					}
+					|	DOUBLE
+						{
+							$$.type = new Tree.TypeIdent(Tree.DOUBLE, $1.loc);
+						}
+					|	BOOL
+						{
+							$$.type = new Tree.TypeIdent(Tree.BOOL, $1.loc);
+						}
+					|	VOID
+						{
+							$$.type = new Tree.TypeIdent(Tree.VOID, $1.loc);
+						}
+					|	STRING
+						{
+							$$.type = new Tree.TypeIdent(Tree.STRING, $1.loc);
+						}
+					|	CLASS IDENTIFIER
+						{
+							$$.type = new Tree.TypeClass($2.ident, $1.loc);
+						}
+					|	Type '['']'
+						{
+							$$.type = new Tree.TypeArray($1.type, $1.loc);
+						}
               	;
 
 ClassDef        :	CLASS IDENTIFIER ExtendsClause '{' FieldList '}'
@@ -200,6 +200,7 @@ Stmt		    :	VariableDef
                 |	PrintStmt ';'
                 |	BreakStmt ';'
                 |	StmtBlock
+                |	RepeatStmt
                 ;
 
 SimpleStmt      :	LValue '=' Expr
@@ -339,8 +340,14 @@ Expr            :	LValue
                		{
                			$$.expr = new Tree.TypeCast($3.ident, $5.expr, $1.loc);
                		}
-                ;
-	
+               	;
+               	
+BoolExpr		:	Expr
+					{
+						$$.expr = $1.expr;
+					}
+				;
+				
 Constant        :	LITERAL
 					{
 						$$.expr = new Tree.Literal($1.typeTag, $1.literal, $1.loc);
@@ -380,6 +387,17 @@ WhileStmt       :	WHILE '(' Expr ')' Stmt
 					}
                 ;
 
+ForStmt			:	FOR '('SimpleStmt ';' BoolExpr ';' SimpleStmt')' Stmt
+					{
+						$$.stmt = new Tree.ForLoop($3.stmt, $5.expr, $7.stmt, $9.stmt, $1.loc);
+					}
+				;
+
+RepeatStmt		:	REPEAT	Stmt UNTIL '(' BoolExpr ')'
+					{
+						$$.stmt = new Tree.RepeatLoop($5.expr, $2.stmt, $1.loc);
+					}
+				;	
 
 BreakStmt       :	BREAK
 					{

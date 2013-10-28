@@ -5,6 +5,7 @@ import java.io.IOException;
 import decaf.Driver;
 import decaf.Location;
 import decaf.error.DecafError;
+import decaf.error.DoubleTooLargeError;
 import decaf.error.IntTooLargeError;
 import decaf.tree.Tree;
 
@@ -56,6 +57,17 @@ public abstract class BaseLexer {
 		} catch (NumberFormatException e) {
 			Driver.getDriver().issueError(
 					new IntTooLargeError(getLocation(), ival));
+		}
+		return Parser.LITERAL;
+	}
+	
+	protected int doubleConst(String ival) {
+		try {
+			setSemantic(getLocation(), SemValue.createLiteral(
+					Tree.DOUBLE, Double.parseDouble(ival)));
+		} catch (NumberFormatException e) {
+			Driver.getDriver().issueError(
+					new DoubleTooLargeError(getLocation(), ival));
 		}
 		return Parser.LITERAL;
 	}
