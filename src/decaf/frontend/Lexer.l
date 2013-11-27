@@ -111,7 +111,7 @@ WHITESPACE			= ([ \t]+)
 {IDENTIFIER}		{ return identifier(yytext());			}
 
 	//识别单操作符
-{SIMPLE_OPERATOR}	{ return yytext().charAt(0);			}
+{SIMPLE_OPERATOR}	{ return operator(yycharat(0));			}
 	
 	// 上面规则不能识别的字符怎么处理
 .					{ issueError(new UnrecogCharError(getLocation(), yycharat(0))); 		}

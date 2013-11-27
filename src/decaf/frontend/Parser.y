@@ -324,7 +324,7 @@ Expr            :	LValue
                		{
                			$$.expr = new Tree.ReadIntExpr($1.loc);
                		}
-               	|	ReadLine '(' ')'
+               	|	READ_LINE '(' ')'
                		{
                			$$.expr = new Tree.ReadLineExpr($1.loc);
                		}
@@ -393,7 +393,7 @@ ForStmt			:	FOR '('SimpleStmt ';' BoolExpr ';' SimpleStmt')' Stmt
 					}
 				;
 
-RepeatStmt		:	REPEAT	Stmt UNTIL '(' BoolExpr ')'
+RepeatStmt		:	REPEAT	Stmt UNTIL '(' BoolExpr ')' ';'
 					{
 						$$.stmt = new Tree.RepeatLoop($5.expr, $2.stmt, $1.loc);
 					}

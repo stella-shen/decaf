@@ -84,7 +84,7 @@
   64       | Expr OR Expr
   65       | '!' Expr
   66       | READ_INTEGER '(' ')'
-  67       | ReadLine '(' ')'
+  67       | READ_LINE '(' ')'
   68       | NEW IDENTIFIER '(' ')'
   69       | NEW Type '[' Expr ']'
   70       | '(' CLASS IDENTIFIER ')' Expr
@@ -105,7 +105,7 @@
 
   80  ForStmt : FOR '(' SimpleStmt ';' BoolExpr ';' SimpleStmt ')' Stmt
 
-  81  RepeatStmt : REPEAT Stmt UNTIL '(' BoolExpr ')'
+  81  RepeatStmt : REPEAT Stmt UNTIL '(' BoolExpr ')' ';'
 
   82  BreakStmt : BREAK
 
@@ -521,14 +521,14 @@ state 46
 	NEW  shift 54
 	PRINT  shift 55
 	READ_INTEGER  shift 56
-	LITERAL  shift 57
-	'-'  shift 58
-	'!'  shift 59
-	'('  shift 60
+	READ_LINE  shift 57
+	LITERAL  shift 58
+	'-'  shift 59
+	'!'  shift 60
+	'('  shift 61
 	'{'  shift 42
-	'}'  shift 61
-	REPEAT  shift 62
-	ReadLine  shift 63
+	'}'  shift 62
+	REPEAT  shift 63
 	IDENTIFIER  reduce 42
 	';'  reduce 40
 
@@ -594,11 +594,11 @@ state 52
 	THIS  shift 48
 	NEW  shift 54
 	READ_INTEGER  shift 56
-	LITERAL  shift 57
-	'-'  shift 58
-	'!'  shift 59
-	'('  shift 60
-	ReadLine  shift 63
+	READ_LINE  shift 57
+	LITERAL  shift 58
+	'-'  shift 59
+	'!'  shift 60
+	'('  shift 61
 	IDENTIFIER  reduce 42
 	';'  reduce 87
 
@@ -646,12 +646,19 @@ state 56
 
 
 state 57
+	Expr : READ_LINE . '(' ')'  (67)
+
+	'('  shift 90
+	.  error
+
+
+state 58
 	Constant : LITERAL .  (72)
 
 	.  reduce 72
 
 
-state 58
+state 59
 	Expr : '-' . Expr  (56)
 	Receiver : .  (42)
 
@@ -659,33 +666,11 @@ state 58
 	THIS  shift 48
 	NEW  shift 54
 	READ_INTEGER  shift 56
-	LITERAL  shift 57
-	'-'  shift 58
-	'!'  shift 59
-	'('  shift 60
-	ReadLine  shift 63
-	IDENTIFIER  reduce 42
-
-	LValue  goto 83
-	Expr  goto 90
-	Call  goto 85
-	Receiver  goto 78
-	Constant  goto 79
-
-
-state 59
-	Expr : '!' . Expr  (65)
-	Receiver : .  (42)
-
-	NULL  shift 47
-	THIS  shift 48
-	NEW  shift 54
-	READ_INTEGER  shift 56
-	LITERAL  shift 57
-	'-'  shift 58
-	'!'  shift 59
-	'('  shift 60
-	ReadLine  shift 63
+	READ_LINE  shift 57
+	LITERAL  shift 58
+	'-'  shift 59
+	'!'  shift 60
+	'('  shift 61
 	IDENTIFIER  reduce 42
 
 	LValue  goto 83
@@ -696,37 +681,59 @@ state 59
 
 
 state 60
-	Expr : '(' . Expr ')'  (51)
-	Expr : '(' . CLASS IDENTIFIER ')' Expr  (70)
+	Expr : '!' . Expr  (65)
 	Receiver : .  (42)
 
-	CLASS  shift 92
 	NULL  shift 47
 	THIS  shift 48
 	NEW  shift 54
 	READ_INTEGER  shift 56
-	LITERAL  shift 57
-	'-'  shift 58
-	'!'  shift 59
-	'('  shift 60
-	ReadLine  shift 63
+	READ_LINE  shift 57
+	LITERAL  shift 58
+	'-'  shift 59
+	'!'  shift 60
+	'('  shift 61
 	IDENTIFIER  reduce 42
 
 	LValue  goto 83
-	Expr  goto 93
+	Expr  goto 92
 	Call  goto 85
 	Receiver  goto 78
 	Constant  goto 79
 
 
 state 61
+	Expr : '(' . Expr ')'  (51)
+	Expr : '(' . CLASS IDENTIFIER ')' Expr  (70)
+	Receiver : .  (42)
+
+	CLASS  shift 93
+	NULL  shift 47
+	THIS  shift 48
+	NEW  shift 54
+	READ_INTEGER  shift 56
+	READ_LINE  shift 57
+	LITERAL  shift 58
+	'-'  shift 59
+	'!'  shift 60
+	'('  shift 61
+	IDENTIFIER  reduce 42
+
+	LValue  goto 83
+	Expr  goto 94
+	Call  goto 85
+	Receiver  goto 78
+	Constant  goto 79
+
+
+state 62
 	StmtBlock : '{' StmtList '}' .  (25)
 
 	.  reduce 25
 
 
-state 62
-	RepeatStmt : REPEAT . Stmt UNTIL '(' BoolExpr ')'  (81)
+state 63
+	RepeatStmt : REPEAT . Stmt UNTIL '(' BoolExpr ')' ';'  (81)
 	SimpleStmt : .  (40)
 	Receiver : .  (42)
 
@@ -746,13 +753,13 @@ state 62
 	NEW  shift 54
 	PRINT  shift 55
 	READ_INTEGER  shift 56
-	LITERAL  shift 57
-	'-'  shift 58
-	'!'  shift 59
-	'('  shift 60
+	READ_LINE  shift 57
+	LITERAL  shift 58
+	'-'  shift 59
+	'!'  shift 60
+	'('  shift 61
 	'{'  shift 42
-	REPEAT  shift 62
-	ReadLine  shift 63
+	REPEAT  shift 63
 	IDENTIFIER  reduce 42
 	';'  reduce 40
 
@@ -760,7 +767,7 @@ state 62
 	Variable  goto 21
 	Type  goto 34
 	StmtBlock  goto 65
-	Stmt  goto 94
+	Stmt  goto 95
 	SimpleStmt  goto 67
 	IfStmt  goto 68
 	WhileStmt  goto 69
@@ -774,13 +781,6 @@ state 62
 	Call  goto 77
 	Receiver  goto 78
 	Constant  goto 79
-
-
-state 63
-	Expr : ReadLine . '(' ')'  (67)
-
-	'('  shift 95
-	.  error
 
 
 state 64
@@ -955,11 +955,11 @@ state 80
 	THIS  shift 48
 	NEW  shift 54
 	READ_INTEGER  shift 56
-	LITERAL  shift 57
-	'-'  shift 58
-	'!'  shift 59
-	'('  shift 60
-	ReadLine  shift 63
+	READ_LINE  shift 57
+	LITERAL  shift 58
+	'-'  shift 59
+	'!'  shift 60
+	'('  shift 61
 	IDENTIFIER  reduce 42
 
 	LValue  goto 83
@@ -978,11 +978,11 @@ state 81
 	THIS  shift 48
 	NEW  shift 54
 	READ_INTEGER  shift 56
-	LITERAL  shift 57
-	'-'  shift 58
-	'!'  shift 59
-	'('  shift 60
-	ReadLine  shift 63
+	READ_LINE  shift 57
+	LITERAL  shift 58
+	'-'  shift 59
+	'!'  shift 60
+	'('  shift 61
 	IDENTIFIER  reduce 42
 	';'  reduce 40
 
@@ -1002,11 +1002,11 @@ state 82
 	THIS  shift 48
 	NEW  shift 54
 	READ_INTEGER  shift 56
-	LITERAL  shift 57
-	'-'  shift 58
-	'!'  shift 59
-	'('  shift 60
-	ReadLine  shift 63
+	READ_LINE  shift 57
+	LITERAL  shift 58
+	'-'  shift 59
+	'!'  shift 60
+	'('  shift 61
 	IDENTIFIER  reduce 42
 
 	LValue  goto 83
@@ -1087,11 +1087,11 @@ state 88
 	THIS  shift 48
 	NEW  shift 122
 	READ_INTEGER  shift 56
-	LITERAL  shift 57
-	'-'  shift 58
-	'!'  shift 59
-	'('  shift 60
-	ReadLine  shift 63
+	READ_LINE  shift 57
+	LITERAL  shift 58
+	'-'  shift 59
+	'!'  shift 60
+	'('  shift 61
 	IDENTIFIER  reduce 42
 
 	LValue  goto 83
@@ -1110,6 +1110,13 @@ state 89
 
 
 state 90
+	Expr : READ_LINE '(' . ')'  (67)
+
+	')'  shift 126
+	.  error
+
+
+state 91
 	Receiver : Expr . '.'  (41)
 	LValue : Expr . '[' Expr ']'  (44)
 	Expr : Expr . '+' Expr  (49)
@@ -1148,7 +1155,7 @@ state 90
 	']'  reduce 56
 
 
-state 91
+state 92
 	Receiver : Expr . '.'  (41)
 	LValue : Expr . '[' Expr ']'  (44)
 	Expr : Expr . '+' Expr  (49)
@@ -1187,14 +1194,14 @@ state 91
 	']'  reduce 65
 
 
-state 92
+state 93
 	Expr : '(' CLASS . IDENTIFIER ')' Expr  (70)
 
-	IDENTIFIER  shift 126
+	IDENTIFIER  shift 127
 	.  error
 
 
-state 93
+state 94
 	Receiver : Expr . '.'  (41)
 	LValue : Expr . '[' Expr ']'  (44)
 	Expr : Expr . '+' Expr  (49)
@@ -1226,22 +1233,15 @@ state 93
 	'>'  shift 112
 	'<'  shift 113
 	'.'  shift 114
-	')'  shift 127
+	')'  shift 128
 	'['  shift 115
 	.  error
 
 
-state 94
-	RepeatStmt : REPEAT Stmt . UNTIL '(' BoolExpr ')'  (81)
-
-	UNTIL  shift 128
-	.  error
-
-
 state 95
-	Expr : ReadLine '(' . ')'  (67)
+	RepeatStmt : REPEAT Stmt . UNTIL '(' BoolExpr ')' ';'  (81)
 
-	')'  shift 129
+	UNTIL  shift 129
 	.  error
 
 
@@ -1277,11 +1277,11 @@ state 100
 	THIS  shift 48
 	NEW  shift 54
 	READ_INTEGER  shift 56
-	LITERAL  shift 57
-	'-'  shift 58
-	'!'  shift 59
-	'('  shift 60
-	ReadLine  shift 63
+	READ_LINE  shift 57
+	LITERAL  shift 58
+	'-'  shift 59
+	'!'  shift 60
+	'('  shift 61
 	IDENTIFIER  reduce 42
 
 	LValue  goto 83
@@ -1299,11 +1299,11 @@ state 101
 	THIS  shift 48
 	NEW  shift 54
 	READ_INTEGER  shift 56
-	LITERAL  shift 57
-	'-'  shift 58
-	'!'  shift 59
-	'('  shift 60
-	ReadLine  shift 63
+	READ_LINE  shift 57
+	LITERAL  shift 58
+	'-'  shift 59
+	'!'  shift 60
+	'('  shift 61
 	IDENTIFIER  reduce 42
 
 	LValue  goto 83
@@ -1321,11 +1321,11 @@ state 102
 	THIS  shift 48
 	NEW  shift 54
 	READ_INTEGER  shift 56
-	LITERAL  shift 57
-	'-'  shift 58
-	'!'  shift 59
-	'('  shift 60
-	ReadLine  shift 63
+	READ_LINE  shift 57
+	LITERAL  shift 58
+	'-'  shift 59
+	'!'  shift 60
+	'('  shift 61
 	IDENTIFIER  reduce 42
 
 	LValue  goto 83
@@ -1343,11 +1343,11 @@ state 103
 	THIS  shift 48
 	NEW  shift 54
 	READ_INTEGER  shift 56
-	LITERAL  shift 57
-	'-'  shift 58
-	'!'  shift 59
-	'('  shift 60
-	ReadLine  shift 63
+	READ_LINE  shift 57
+	LITERAL  shift 58
+	'-'  shift 59
+	'!'  shift 60
+	'('  shift 61
 	IDENTIFIER  reduce 42
 
 	LValue  goto 83
@@ -1365,11 +1365,11 @@ state 104
 	THIS  shift 48
 	NEW  shift 54
 	READ_INTEGER  shift 56
-	LITERAL  shift 57
-	'-'  shift 58
-	'!'  shift 59
-	'('  shift 60
-	ReadLine  shift 63
+	READ_LINE  shift 57
+	LITERAL  shift 58
+	'-'  shift 59
+	'!'  shift 60
+	'('  shift 61
 	IDENTIFIER  reduce 42
 
 	LValue  goto 83
@@ -1387,11 +1387,11 @@ state 105
 	THIS  shift 48
 	NEW  shift 54
 	READ_INTEGER  shift 56
-	LITERAL  shift 57
-	'-'  shift 58
-	'!'  shift 59
-	'('  shift 60
-	ReadLine  shift 63
+	READ_LINE  shift 57
+	LITERAL  shift 58
+	'-'  shift 59
+	'!'  shift 60
+	'('  shift 61
 	IDENTIFIER  reduce 42
 
 	LValue  goto 83
@@ -1409,11 +1409,11 @@ state 106
 	THIS  shift 48
 	NEW  shift 54
 	READ_INTEGER  shift 56
-	LITERAL  shift 57
-	'-'  shift 58
-	'!'  shift 59
-	'('  shift 60
-	ReadLine  shift 63
+	READ_LINE  shift 57
+	LITERAL  shift 58
+	'-'  shift 59
+	'!'  shift 60
+	'('  shift 61
 	IDENTIFIER  reduce 42
 
 	LValue  goto 83
@@ -1431,11 +1431,11 @@ state 107
 	THIS  shift 48
 	NEW  shift 54
 	READ_INTEGER  shift 56
-	LITERAL  shift 57
-	'-'  shift 58
-	'!'  shift 59
-	'('  shift 60
-	ReadLine  shift 63
+	READ_LINE  shift 57
+	LITERAL  shift 58
+	'-'  shift 59
+	'!'  shift 60
+	'('  shift 61
 	IDENTIFIER  reduce 42
 
 	LValue  goto 83
@@ -1453,11 +1453,11 @@ state 108
 	THIS  shift 48
 	NEW  shift 54
 	READ_INTEGER  shift 56
-	LITERAL  shift 57
-	'-'  shift 58
-	'!'  shift 59
-	'('  shift 60
-	ReadLine  shift 63
+	READ_LINE  shift 57
+	LITERAL  shift 58
+	'-'  shift 59
+	'!'  shift 60
+	'('  shift 61
 	IDENTIFIER  reduce 42
 
 	LValue  goto 83
@@ -1475,11 +1475,11 @@ state 109
 	THIS  shift 48
 	NEW  shift 54
 	READ_INTEGER  shift 56
-	LITERAL  shift 57
-	'-'  shift 58
-	'!'  shift 59
-	'('  shift 60
-	ReadLine  shift 63
+	READ_LINE  shift 57
+	LITERAL  shift 58
+	'-'  shift 59
+	'!'  shift 60
+	'('  shift 61
 	IDENTIFIER  reduce 42
 
 	LValue  goto 83
@@ -1497,11 +1497,11 @@ state 110
 	THIS  shift 48
 	NEW  shift 54
 	READ_INTEGER  shift 56
-	LITERAL  shift 57
-	'-'  shift 58
-	'!'  shift 59
-	'('  shift 60
-	ReadLine  shift 63
+	READ_LINE  shift 57
+	LITERAL  shift 58
+	'-'  shift 59
+	'!'  shift 60
+	'('  shift 61
 	IDENTIFIER  reduce 42
 
 	LValue  goto 83
@@ -1519,11 +1519,11 @@ state 111
 	THIS  shift 48
 	NEW  shift 54
 	READ_INTEGER  shift 56
-	LITERAL  shift 57
-	'-'  shift 58
-	'!'  shift 59
-	'('  shift 60
-	ReadLine  shift 63
+	READ_LINE  shift 57
+	LITERAL  shift 58
+	'-'  shift 59
+	'!'  shift 60
+	'('  shift 61
 	IDENTIFIER  reduce 42
 
 	LValue  goto 83
@@ -1541,11 +1541,11 @@ state 112
 	THIS  shift 48
 	NEW  shift 54
 	READ_INTEGER  shift 56
-	LITERAL  shift 57
-	'-'  shift 58
-	'!'  shift 59
-	'('  shift 60
-	ReadLine  shift 63
+	READ_LINE  shift 57
+	LITERAL  shift 58
+	'-'  shift 59
+	'!'  shift 60
+	'('  shift 61
 	IDENTIFIER  reduce 42
 
 	LValue  goto 83
@@ -1563,11 +1563,11 @@ state 113
 	THIS  shift 48
 	NEW  shift 54
 	READ_INTEGER  shift 56
-	LITERAL  shift 57
-	'-'  shift 58
-	'!'  shift 59
-	'('  shift 60
-	ReadLine  shift 63
+	READ_LINE  shift 57
+	LITERAL  shift 58
+	'-'  shift 59
+	'!'  shift 60
+	'('  shift 61
 	IDENTIFIER  reduce 42
 
 	LValue  goto 83
@@ -1591,11 +1591,11 @@ state 115
 	THIS  shift 48
 	NEW  shift 54
 	READ_INTEGER  shift 56
-	LITERAL  shift 57
-	'-'  shift 58
-	'!'  shift 59
-	'('  shift 60
-	ReadLine  shift 63
+	READ_LINE  shift 57
+	LITERAL  shift 58
+	'-'  shift 59
+	'!'  shift 60
+	'('  shift 61
 	IDENTIFIER  reduce 42
 
 	LValue  goto 83
@@ -1729,12 +1729,12 @@ state 121
 	THIS  shift 48
 	NEW  shift 54
 	READ_INTEGER  shift 56
-	LITERAL  shift 57
-	'-'  shift 58
-	'!'  shift 59
-	'('  shift 60
+	READ_LINE  shift 57
+	LITERAL  shift 58
+	'-'  shift 59
+	'!'  shift 60
+	'('  shift 61
 	']'  shift 31
-	ReadLine  shift 63
 	IDENTIFIER  reduce 42
 
 	LValue  goto 83
@@ -1814,29 +1814,29 @@ state 125
 
 
 state 126
+	Expr : READ_LINE '(' ')' .  (67)
+
+	.  reduce 67
+
+
+state 127
 	Expr : '(' CLASS IDENTIFIER . ')' Expr  (70)
 
 	')'  shift 154
 	.  error
 
 
-state 127
+state 128
 	Expr : '(' Expr ')' .  (51)
 
 	.  reduce 51
 
 
-state 128
-	RepeatStmt : REPEAT Stmt UNTIL . '(' BoolExpr ')'  (81)
+state 129
+	RepeatStmt : REPEAT Stmt UNTIL . '(' BoolExpr ')' ';'  (81)
 
 	'('  shift 155
 	.  error
-
-
-state 129
-	Expr : ReadLine '(' ')' .  (67)
-
-	.  reduce 67
 
 
 state 130
@@ -2409,11 +2409,11 @@ state 145
 	THIS  shift 48
 	NEW  shift 122
 	READ_INTEGER  shift 56
-	LITERAL  shift 57
-	'-'  shift 58
-	'!'  shift 59
-	'('  shift 60
-	ReadLine  shift 63
+	READ_LINE  shift 57
+	LITERAL  shift 58
+	'-'  shift 59
+	'!'  shift 60
+	'('  shift 61
 	IDENTIFIER  reduce 42
 	')'  reduce 75
 
@@ -2447,13 +2447,13 @@ state 146
 	NEW  shift 54
 	PRINT  shift 55
 	READ_INTEGER  shift 56
-	LITERAL  shift 57
-	'-'  shift 58
-	'!'  shift 59
-	'('  shift 60
+	READ_LINE  shift 57
+	LITERAL  shift 58
+	'-'  shift 59
+	'!'  shift 60
+	'('  shift 61
 	'{'  shift 42
-	REPEAT  shift 62
-	ReadLine  shift 63
+	REPEAT  shift 63
 	IDENTIFIER  reduce 42
 	';'  reduce 40
 
@@ -2485,11 +2485,11 @@ state 147
 	THIS  shift 48
 	NEW  shift 54
 	READ_INTEGER  shift 56
-	LITERAL  shift 57
-	'-'  shift 58
-	'!'  shift 59
-	'('  shift 60
-	ReadLine  shift 63
+	READ_LINE  shift 57
+	LITERAL  shift 58
+	'-'  shift 59
+	'!'  shift 60
+	'('  shift 61
 	IDENTIFIER  reduce 42
 
 	LValue  goto 83
@@ -2521,13 +2521,13 @@ state 148
 	NEW  shift 54
 	PRINT  shift 55
 	READ_INTEGER  shift 56
-	LITERAL  shift 57
-	'-'  shift 58
-	'!'  shift 59
-	'('  shift 60
+	READ_LINE  shift 57
+	LITERAL  shift 58
+	'-'  shift 59
+	'!'  shift 60
+	'('  shift 61
 	'{'  shift 42
-	REPEAT  shift 62
-	ReadLine  shift 63
+	REPEAT  shift 63
 	IDENTIFIER  reduce 42
 	';'  reduce 40
 
@@ -2610,11 +2610,11 @@ state 152
 	THIS  shift 48
 	NEW  shift 54
 	READ_INTEGER  shift 56
-	LITERAL  shift 57
-	'-'  shift 58
-	'!'  shift 59
-	'('  shift 60
-	ReadLine  shift 63
+	READ_LINE  shift 57
+	LITERAL  shift 58
+	'-'  shift 59
+	'!'  shift 60
+	'('  shift 61
 	IDENTIFIER  reduce 42
 
 	LValue  goto 83
@@ -2638,11 +2638,11 @@ state 154
 	THIS  shift 48
 	NEW  shift 54
 	READ_INTEGER  shift 56
-	LITERAL  shift 57
-	'-'  shift 58
-	'!'  shift 59
-	'('  shift 60
-	ReadLine  shift 63
+	READ_LINE  shift 57
+	LITERAL  shift 58
+	'-'  shift 59
+	'!'  shift 60
+	'('  shift 61
 	IDENTIFIER  reduce 42
 
 	LValue  goto 83
@@ -2653,18 +2653,18 @@ state 154
 
 
 state 155
-	RepeatStmt : REPEAT Stmt UNTIL '(' . BoolExpr ')'  (81)
+	RepeatStmt : REPEAT Stmt UNTIL '(' . BoolExpr ')' ';'  (81)
 	Receiver : .  (42)
 
 	NULL  shift 47
 	THIS  shift 48
 	NEW  shift 54
 	READ_INTEGER  shift 56
-	LITERAL  shift 57
-	'-'  shift 58
-	'!'  shift 59
-	'('  shift 60
-	ReadLine  shift 63
+	READ_LINE  shift 57
+	LITERAL  shift 58
+	'-'  shift 59
+	'!'  shift 60
+	'('  shift 61
 	IDENTIFIER  reduce 42
 
 	LValue  goto 83
@@ -2767,6 +2767,7 @@ state 162
 	NEW  reduce 85
 	PRINT  reduce 85
 	READ_INTEGER  reduce 85
+	READ_LINE  reduce 85
 	LITERAL  reduce 85
 	IDENTIFIER  reduce 85
 	'-'  reduce 85
@@ -2777,7 +2778,6 @@ state 162
 	'}'  reduce 85
 	REPEAT  reduce 85
 	UNTIL  reduce 85
-	ReadLine  reduce 85
 
 	ElseClause  goto 171
 
@@ -2855,7 +2855,7 @@ state 166
 
 
 state 167
-	RepeatStmt : REPEAT Stmt UNTIL '(' BoolExpr . ')'  (81)
+	RepeatStmt : REPEAT Stmt UNTIL '(' BoolExpr . ')' ';'  (81)
 
 	')'  shift 173
 	.  error
@@ -2876,11 +2876,11 @@ state 169
 	THIS  shift 48
 	NEW  shift 54
 	READ_INTEGER  shift 56
-	LITERAL  shift 57
-	'-'  shift 58
-	'!'  shift 59
-	'('  shift 60
-	ReadLine  shift 63
+	READ_LINE  shift 57
+	LITERAL  shift 58
+	'-'  shift 59
+	'!'  shift 60
+	'('  shift 61
 	IDENTIFIER  reduce 42
 	')'  reduce 40
 
@@ -2913,13 +2913,13 @@ state 170
 	NEW  shift 54
 	PRINT  shift 55
 	READ_INTEGER  shift 56
-	LITERAL  shift 57
-	'-'  shift 58
-	'!'  shift 59
-	'('  shift 60
+	READ_LINE  shift 57
+	LITERAL  shift 58
+	'-'  shift 59
+	'!'  shift 60
+	'('  shift 61
 	'{'  shift 42
-	REPEAT  shift 62
-	ReadLine  shift 63
+	REPEAT  shift 63
 	IDENTIFIER  reduce 42
 	';'  reduce 40
 
@@ -2959,15 +2959,16 @@ state 172
 
 
 state 173
-	RepeatStmt : REPEAT Stmt UNTIL '(' BoolExpr ')' .  (81)
+	RepeatStmt : REPEAT Stmt UNTIL '(' BoolExpr ')' . ';'  (81)
 
-	.  reduce 81
+	';'  shift 176
+	.  error
 
 
 state 174
 	ForStmt : FOR '(' SimpleStmt ';' BoolExpr ';' SimpleStmt . ')' Stmt  (80)
 
-	')'  shift 176
+	')'  shift 177
 	.  error
 
 
@@ -2978,6 +2979,12 @@ state 175
 
 
 state 176
+	RepeatStmt : REPEAT Stmt UNTIL '(' BoolExpr ')' ';' .  (81)
+
+	.  reduce 81
+
+
+state 177
 	ForStmt : FOR '(' SimpleStmt ';' BoolExpr ';' SimpleStmt ')' . Stmt  (80)
 	SimpleStmt : .  (40)
 	Receiver : .  (42)
@@ -2998,13 +3005,13 @@ state 176
 	NEW  shift 54
 	PRINT  shift 55
 	READ_INTEGER  shift 56
-	LITERAL  shift 57
-	'-'  shift 58
-	'!'  shift 59
-	'('  shift 60
+	READ_LINE  shift 57
+	LITERAL  shift 58
+	'-'  shift 59
+	'!'  shift 60
+	'('  shift 61
 	'{'  shift 42
-	REPEAT  shift 62
-	ReadLine  shift 63
+	REPEAT  shift 63
 	IDENTIFIER  reduce 42
 	';'  reduce 40
 
@@ -3012,7 +3019,7 @@ state 176
 	Variable  goto 21
 	Type  goto 34
 	StmtBlock  goto 65
-	Stmt  goto 177
+	Stmt  goto 178
 	SimpleStmt  goto 67
 	IfStmt  goto 68
 	WhileStmt  goto 69
@@ -3028,7 +3035,7 @@ state 176
 	Constant  goto 79
 
 
-state 177
+state 178
 	ForStmt : FOR '(' SimpleStmt ';' BoolExpr ';' SimpleStmt ')' Stmt .  (80)
 
 	.  reduce 80
@@ -3041,5 +3048,5 @@ Rules never reduced:
 State 172 contains 2 reduce/reduce conflicts.
 
 
-54 terminals, 32 nonterminals
-89 grammar rules, 178 states
+53 terminals, 32 nonterminals
+89 grammar rules, 179 states
